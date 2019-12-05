@@ -43,7 +43,7 @@ import javax.ws.rs.Path;
 /**
  * A {@link BatchSource} that reads from Amazon S3.
  */
-@Plugin(type = BatchSource.PLUGIN_TYPE)
+//@Plugin(type = BatchSource.PLUGIN_TYPE)
 @Name("S3")
 @Description("Batch source to use Amazon S3 as a source.")
 public class S3BatchSource extends AbstractFileSource<S3BatchSource.S3BatchConfig> {
