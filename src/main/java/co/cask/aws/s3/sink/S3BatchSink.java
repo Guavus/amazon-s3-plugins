@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 /**
  * {@link S3BatchSink} that stores the data of the latest run of an adapter in S3.
  */
-//@Plugin(type = BatchSink.PLUGIN_TYPE)
+@Plugin(type = BatchSink.PLUGIN_TYPE)
 @Name("S3")
 @Description("Batch source to use Amazon S3 as a source.")
 public class S3BatchSink extends AbstractFileSink<S3BatchSink.S3BatchSinkConfig> {
