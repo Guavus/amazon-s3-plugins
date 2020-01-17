@@ -25,6 +25,8 @@ The format must be one of 'json', 'avro', 'parquet', 'csv', 'tsv', or 'delimited
 **Delimiter:** Delimiter to use if the format is 'delimited'.
 The delimiter will be ignored if the format is anything other than 'delimited'.
 
+**Region:** AWS Region of S3 bucket.
+
 **Authentication Method:** Authentication method to access S3. The default value is Access Credentials.
 IAM can only be used if the plugin is run in an AWS environment, such as on EMR.
 
