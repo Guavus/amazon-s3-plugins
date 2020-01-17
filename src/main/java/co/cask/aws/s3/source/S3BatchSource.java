@@ -49,8 +49,7 @@ import javax.ws.rs.Path;
 public class S3BatchSource extends AbstractFileSource<S3BatchSource.S3BatchConfig> {
   private static final String S3A_ACCESS_KEY = "fs.s3a.access.key";
   private static final String S3A_SECRET_KEY = "fs.s3a.secret.key";
-  private static final String S3N_ACCESS_KEY = "fs.s3n.awsAccessKeyId";
-  private static final String S3N_SECRET_KEY = "fs.s3n.awsSecretAccessKey";
+  private static final String S3A_ENDPOINT = "fs.s3a.endpoint";
   private static final String ACCESS_CREDENTIALS = "Access Credentials";
 
   @SuppressWarnings("unused")
@@ -63,15 +62,17 @@ public class S3BatchSource extends AbstractFileSource<S3BatchSource.S3BatchConfi
 
   @Override
   protected Map<String, String> getFileSystemProperties(BatchSourceContext context) {
+
     String authenticationMethod = config.authenticationMethod;
     Map<String, String> properties = new HashMap<>(config.getFilesystemProperties());
     if (authenticationMethod != null && authenticationMethod.equalsIgnoreCase(ACCESS_CREDENTIALS)) {
       if (config.path.startsWith("s3a://")) {
         properties.put(S3A_ACCESS_KEY, config.accessID);
         properties.put(S3A_SECRET_KEY, config.accessKey);
-      } else if (config.path.startsWith("s3n://")) {
-        properties.put(S3N_ACCESS_KEY, config.accessID);
-        properties.put(S3N_SECRET_KEY, config.accessKey);
+        String endPoint = "s3." + config.region + ".amazonaws.com";
+        if (!(properties.containsKey(S3A_ENDPOINT))) {
+          properties.put(S3A_ENDPOINT, endPoint);
+        }
       }
     }
     if (config.shouldCopyHeader()) {
@@ -112,7 +113,7 @@ public class S3BatchSource extends AbstractFileSource<S3BatchSource.S3BatchConfi
 
     @Macro
     @Description("Path to file(s) to be read. If a directory is specified, terminate the path name with a '/'. " +
-      "The path must start with s3a:// or s3n://.")
+      "The path must start with s3a://.")
     private String path;
 
     @Macro
@@ -127,9 +128,13 @@ public class S3BatchSource extends AbstractFileSource<S3BatchSource.S3BatchConfi
 
     @Macro
     @Nullable
+    @Description("Region of the Amazon S3 instance to connect to.")
+    private String region;
+
+    @Macro
+    @Nullable
     @Description("Authentication method to access S3. " +
-      "Defaults to Access Credentials. URI scheme should be s3a:// for S3AFileSystem or s3n:// for " +
-      "S3NativeFileSystem.")
+      "Defaults to Access Credentials. URI scheme should be s3a:// for S3AFileSystem")
     private String authenticationMethod;
 
     @Macro
@@ -156,9 +161,13 @@ public class S3BatchSource extends AbstractFileSource<S3BatchSource.S3BatchConfi
                                                "authentication method is Access Credentials.");
         }
       }
-      if (!containsMacro("path") && (!path.startsWith("s3a://") && !path.startsWith("s3n://"))) {
-        throw new IllegalArgumentException("Path must start with s3a:// for S3AFileSystem or s3n:// for " +
-                                             "S3NativeFilesystem.");
+
+      if (!containsMacro("region") && (region == null || region.isEmpty())) {
+        throw new IllegalArgumentException("Non-empty Region must be specified.");
+      }
+
+      if (!containsMacro("path") && !path.startsWith("s3a://")) {
+        throw new IllegalArgumentException("Path must start with s3a:// for S3AFileSystem");
       }
     }
 

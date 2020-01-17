@@ -46,11 +46,9 @@ public class S3BatchSink extends AbstractFileSink<S3BatchSink.S3BatchSinkConfig>
   private static final String ENCRYPTION_VALUE = "AES256";
   private static final String S3A_ACCESS_KEY = "fs.s3a.access.key";
   private static final String S3A_SECRET_KEY = "fs.s3a.secret.key";
+  private static final String S3A_ENDPOINT = "fs.s3a.endpoint";
   private static final String S3A_ENCRYPTION = "fs.s3a.server-side-encryption-algorithm";
 
-  private static final String S3N_ACCESS_KEY = "fs.s3n.awsAccessKeyId";
-  private static final String S3N_SECRET_KEY = "fs.s3n.awsSecretAccessKey";
-  private static final String S3N_ENCRYPTION = "fs.s3n.server-side-encryption-algorithm";
   private static final String ACCESS_CREDENTIALS = "Access Credentials";
 
   private final S3BatchSinkConfig config;
@@ -68,17 +66,16 @@ public class S3BatchSink extends AbstractFileSink<S3BatchSink.S3BatchSinkConfig>
       if (config.path.startsWith("s3a://")) {
         properties.put(S3A_ACCESS_KEY, config.accessID);
         properties.put(S3A_SECRET_KEY, config.accessKey);
-      } else if (config.path.startsWith("s3n://")) {
-        properties.put(S3N_ACCESS_KEY, config.accessID);
-        properties.put(S3N_SECRET_KEY, config.accessKey);
+        String endPoint = "s3." + config.region + ".amazonaws.com";
+        if (!(properties.containsKey(S3A_ENDPOINT))) {
+          properties.put(S3A_ENDPOINT, endPoint);
+        }
       }
     }
 
     if (config.shouldEnableEncryption()) {
       if (config.path.startsWith("s3a://")) {
         properties.put(S3A_ENCRYPTION, ENCRYPTION_VALUE);
-      } else if (config.path.startsWith("s3n://")) {
-        properties.put(S3N_ENCRYPTION, ENCRYPTION_VALUE);
       }
     }
     return properties;
@@ -104,7 +101,7 @@ public class S3BatchSink extends AbstractFileSink<S3BatchSink.S3BatchSinkConfig>
 
     @Macro
     @Description("The S3 path where the data is stored. Example: 's3a://logs' for " +
-      "S3AFileSystem or 's3n://logs' for S3NativeFileSystem.")
+      "S3AFileSystem")
     private String path;
 
     @Macro
@@ -119,8 +116,13 @@ public class S3BatchSink extends AbstractFileSink<S3BatchSink.S3BatchSinkConfig>
 
     @Macro
     @Nullable
+    @Description("Region of the Amazon S3 instance to connect to.")
+    private String region;
+
+    @Macro
+    @Nullable
     @Description("Authentication method to access S3. " +
-      "Defaults to Access Credentials. URI scheme should be s3a:// or s3n://.")
+      "Defaults to Access Credentials. URI scheme should be s3a://")
     private String authenticationMethod;
 
     @Macro
@@ -154,8 +156,12 @@ public class S3BatchSink extends AbstractFileSink<S3BatchSink.S3BatchSinkConfig>
         }
       }
 
-      if (!containsMacro("path") && !path.startsWith("s3a://") && !path.startsWith("s3n://")) {
-        throw new IllegalArgumentException("Path must start with s3a:// or s3n://.");
+      if (!containsMacro("region") && (region == null || region.isEmpty())) {
+        throw new IllegalArgumentException("Non-empty Region must be specified.");
+      }
+
+      if (!containsMacro("path") && !path.startsWith("s3a://")) {
+        throw new IllegalArgumentException("Path must start with s3a://.");
       }
     }
 
