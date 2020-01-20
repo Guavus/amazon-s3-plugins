@@ -21,6 +21,8 @@ If the format is 'text', the schema must contain a field named 'body' of type 's
 
 **Delimiter:** Delimiter to use when the format is 'delimited'. This will be ignored for other formats.
 
+**Region:** AWS Region of S3 bucket.
+
 **Authentication Method:** Authentication method to access S3. The default value is Access Credentials.
 IAM can only be used if the plugin is run in an AWS environment, such as on EMR.
 
