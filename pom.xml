@@ -6,7 +6,7 @@
 
   <groupId>co.cask.hydrator</groupId>
   <artifactId>amazon-s3-plugins</artifactId>
-  <version>1.9.0_5.1.216</version>
+  <version>1.9.0_5.1.217</version>
 
   <licenses>
     <license>
@@ -43,7 +43,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>5.1.216</cdap.version>
+    <cdap.version>5.1.217</cdap.version>
     <hydrator.version>2.1.0</hydrator.version>
     <data.pipeline.parent>system:cdap-data-pipeline[5.1.0,6.0.0-SNAPSHOT)</data.pipeline.parent>
     <data.stream.parent>system:cdap-data-streams[5.1.0,6.0.0-SNAPSHOT)</data.stream.parent>
