@@ -31,34 +31,19 @@
   </issueManagement>
 
   <distributionManagement>
-    <repository>
-      <id>sonatype.release</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>sonatype.snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <site>
-      <id>cask</id>
-      <url>http://cask.co</url>
-    </site>
+           <repository>
+               <id>central</id>
+               <url>http://artifacts.ggn.in.guavus.com:80/libs-release-local</url>
+           </repository>
+           <snapshotRepository>
+               <id>snapshots</id>
+               <url>http://artifacts.ggn.in.guavus.com:8081/artifactory/libs-snapshot-local</url>
+           </snapshotRepository>
   </distributionManagement>
-
-  <repositories>
-    <repository>
-      <id>sonatype.release</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <repository>
-      <id>sonatype-snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-  </repositories>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <cdap.version>5.1.0</cdap.version>
+    <cdap.version>5.1.203</cdap.version>
     <hydrator.version>2.1.0</hydrator.version>
     <data.pipeline.parent>system:cdap-data-pipeline[5.1.0,6.0.0-SNAPSHOT)</data.pipeline.parent>
     <data.stream.parent>system:cdap-data-streams[5.1.0,6.0.0-SNAPSHOT)</data.stream.parent>
